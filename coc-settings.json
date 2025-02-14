@@ -1,0 +1,8 @@
+{
+        "diagnostic.enable": false,
+        "python.linting.enabled": false,
+        "python.jediPath": "~/.pyenv/versions/neovim3/lib/python3.10.5/site-packages/",
+        "intelephense.licenceKey": "004BID8XBCD43OE",
+        "intelephense.enable": "true"
+}
+
