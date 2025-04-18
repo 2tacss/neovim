@@ -37,6 +37,7 @@ call plug#begin()
 	Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 	" fugit
 	Plug 'tpope/vim-fugitive'
+	Plug 'tommcdo/vim-exchange'
 	" Markdown Editor and Preview
 	" Require following:
 	" `Deno`: brew install deno
@@ -45,21 +46,7 @@ call plug#begin()
 	Plug 'toppair/peek.nvim', { 'do': 'deno task --quiet build:fast' }
 call plug#end()
 
-" peek.nvim の設定 "
-lua << EOF
-require('peek').setup({
-  auto_load = true,        -- 別のマークダウンバッファに入るときに自動的にプレビューを読み込むかどうか
-  close_on_bdelete = true, -- バッファを削除するときにプレビューウィンドウを閉じるかどうか
-  syntax = true,           -- シンタックスハイライトを有効にする（パフォーマンスに影響します）
-  theme = 'dark',          -- 'dark' または 'light'
-  update_on_change = true,
-  app = 'webview',         -- 'webview', 'browser', または特定のブラウザを指定
-  filetype = { 'markdown' },-- マークダウンとして認識するファイルタイプのリスト
-  -- update_on_change が true の場合に関連
-  throttle_at = 200000,    -- このバイト数を超えるとスロットリングを開始
-  throttle_time = 'auto',  -- 新しいレンダリングを開始する前に経過する必要のある最小時間（ミリ秒）
-})
-EOF
+
 
 " peek.nvim のコマンド定義 "
 command! PeekOpen lua require('peek').open()
@@ -68,6 +55,12 @@ command! PeekClose lua require('peek').close()
 
 
 runtime! autoload/fugitive.vim
+
+let g:exchange_no_mappings=1
+nmap cx <Plug>(Exchange)
+vmap X <Plug>(Exchange)
+nmap cxc <Plug>(ExchangeClear)
+nmap cxx <Plug>(ExchangeLine)
 
 " Color Scheme
 	colorscheme onedark
@@ -89,7 +82,7 @@ runtime! autoload/fugitive.vim
 	let g:neoterm_default_mod='belowright'
 	let g:neoterm_autoscroll=1
 
-""" Setup
+" Setup
 	set syntax
 	set nobackup
 	set noswapfile
@@ -113,30 +106,30 @@ runtime! autoload/fugitive.vim
 	set foldlevel=1
 	set updatetime=100
 
-""" KeyMap
+" KeyMap
 	nmap <F10> :NERDTreeToggle<CR>
 	nmap <F9> :TagbarToggle<CR>
 	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 	nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " NeoTerm
 	let g:neoterm_autoscroll=1
-""" Run a Terminal
+" Run a Terminal
 	nmap <F8> :Tnew<CR>
-""" Close Fold
+" Close Fold
 	nmap <F7> zc
-""" Open Fold
+" Open Fold
 	nmap <F6> zO
-""" Next Fold
+" Next Fold
 	nmap <F2> zj
-""" Back Fold
+" Back Fold
 	nmap <F3> zk
 	nmap <C-0> ysiw"
 
-""" leave out terminal
+" leave out terminal
 	tnoremap <silent> <C-w> <C-\><C-n><C-w>
-""" Run REPL
-"""" Ctrl+n when in NORMAL mode - Run single line
-"""" Ctrl+n when in VISUAL mode - Run multiple lines
+" Run REPL
+" Ctrl+n when in NORMAL mode - Run single line
+" Ctrl+n when in VISUAL mode - Run multiple lines
 	nnoremap <silent> <C-n> :TREPLSendLine<CR>j0
 	vnoremap <silent> <C-n> V:TREPLSendSelection<CR>'>j0
 " Coc Nvim
@@ -159,3 +152,28 @@ function! s:show_documentation()
   endif
 endfunction
 
+
+" created at
+nnoremap <F5> "=strftime(" @%Y/%m/%d")<CR>P
+" final at
+nnoremap <F4> "=strftime(" ^%Y/%m/%d")<CR>P
+" finished at
+nnoremap <F3> "=strftime(" *%Y/%m/%d")<CR>P
+" remove at
+nnoremap <F2> "=strftime(" &%Y/%m/%d")<CR>P
+
+" peek.nvim の設定 "
+lua << EOF
+require('peek').setup({
+  auto_load = true,        -- 別のマークダウンバッファに入るときに自動的にプレビューを読み込むかどうか
+  close_on_bdelete = true, -- バッファを削除するときにプレビューウィンドウを閉じるかどうか
+  syntax = true,           -- シンタックスハイライトを有効にする（パフォーマンスに影響します）
+  theme = 'dark',          -- 'dark' または 'light'
+  update_on_change = true,
+  app = 'webview',         -- 'webview', 'browser', または特定のブラウザを指定
+  filetype = { 'markdown' },-- マークダウンとして認識するファイルタイプのリスト
+  -- update_on_change が true の場合に関連
+  throttle_at = 200000,    -- このバイト数を超えるとスロットリングを開始
+  throttle_time = 'auto',  -- 新しいレンダリングを開始する前に経過する必要のある最小時間（ミリ秒）
+})
+EOF

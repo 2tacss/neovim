@@ -1,0 +1,21 @@
+""" Setup
+set syntax
+set nobackup
+set noswapfile
+set number
+set termguicolors
+set tabstop=4
+set shiftwidth=4
+set smartindent
+set listchars=tab:»-,trail:-,eol:↲,extends:»,precedes:«,nbsp:%
+set list
+set cursorline
+set nocompatible
+set hlsearch
+nnoremap <silent><Esc><Esc> :<C-u>set nohlsearch!<CR>
+set ignorecase
+set showmatch
+set cmdheight=2
+set display=lastline
+
+
