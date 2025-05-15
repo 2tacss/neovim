@@ -44,6 +44,8 @@ call plug#begin()
 	" cd ~/.local/share/nvim/plugged/peek.nvim
 	" Finally you can use vim commands `PeekOpen` and `PeekClose`.
 	Plug 'toppair/peek.nvim', { 'do': 'deno task --quiet build:fast' }
+	" Show indent lines with colored
+	Plug 'lukas-reineke/indent-blankline.nvim'
 call plug#end()
 
 
@@ -162,7 +164,7 @@ nnoremap <F3> "=strftime(" *%Y/%m/%d")<CR>P
 " remove at
 nnoremap <F2> "=strftime(" &%Y/%m/%d")<CR>P
 
-" peek.nvim の設定 "
+" peek.nvim
 lua << EOF
 require('peek').setup({
   auto_load = true,        -- 別のマークダウンバッファに入るときに自動的にプレビューを読み込むかどうか
@@ -176,4 +178,32 @@ require('peek').setup({
   throttle_at = 200000,    -- このバイト数を超えるとスロットリングを開始
   throttle_time = 'auto',  -- 新しいレンダリングを開始する前に経過する必要のある最小時間（ミリ秒）
 })
+
+-- indent-blankline
+local highlight = {
+    "RainbowBlue",
+    "RainbowOrange",
+    "RainbowGreen",
+    "RainbowViolet",
+    "RainbowCyan",
+    "RainbowYellow",
+    "RainbowRed",
+}
+
+local hooks = require "ibl.hooks"
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+    vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
+    vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
+    vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
+    vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
+    vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
+    vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
+    vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+end)
+
+require("ibl").setup { indent = { highlight = highlight } }
 EOF
+
+
