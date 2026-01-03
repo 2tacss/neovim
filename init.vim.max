@@ -229,19 +229,16 @@ require("ibl").setup { indent = { highlight = highlight } }
 -----------------------
 --- nvim-treesitter ---
 -----------------------
-require('nvim-treesitter-pyfold').setup()
-require'nvim-treesitter.configs'.setup {
+--require('nvim-treesitter-pyfold').setup({ enable = true })
+require('nvim-treesitter.configs').setup({
   ensure_installed = { "python" },
   highlight = { enable = true },
   indent = { enable = true },
-  fold = {
-    enable = true,
-    foldexpr = 'nvim_treesitter#foldexpr()',
-    selectors = {
-      python = {'function_definition', 'class_definition', 'if_stmt', 'for_stmt', 'while_stmt', 'try_stmt', 'with_stmt'},
-    },
-  },
-}
+  --fold = {
+  --  enable = true,
+  --  foldexpr = 'nvim_treesitter#foldexpr()',
+  --  },
+})
 EOF
 
 " setlocal foldmethod=expr

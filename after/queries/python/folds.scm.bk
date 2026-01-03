@@ -1,0 +1,24 @@
+; Fold function and async function bodies
+(function_definition
+  body: (block) @fold)
+
+;(async_function_definition
+;  body: (block) @fold)
+
+; Fold enum bodies
+(class_definition
+  (argument_list
+    (keyword_argument
+      name: (identifier) @enum-base
+      value: (identifier) (#eq? @enum-base "Enum")))
+  body: (block) @fold)
+
+; Fold dataclass bodies (assuming @dataclass decorator is present)
+(decorated_definition
+  (decorator
+    (call
+      function: (identifier) @dataclass-decorator
+      arguments: (argument_list) ?))
+  (class_definition
+    body: (block) @fold)
+  (#match? @dataclass-decorator "^dataclass$"))

@@ -2,6 +2,8 @@ let g:python3_host_prog = $HOME . '/.pyenv/versions/neovim3/bin/python'
 let g:tagbar_ctags_bin = '/opt/homebrew/Cellar/ctags/5.8_2/bin/ctags'
 
 call plug#begin()
+	" HTML close tag
+	Plug 'alvan/vim-closetag'
 	Plug 'joshdick/onedark.vim'
 	Plug 'vim-airline/vim-airline'
 	" :StripWhitespace
@@ -17,9 +19,9 @@ call plug#begin()
 	" Tarinling
 	Plug 'ntpeters/vim-better-whitespace'
 	" Multi Languages Syntax Coloring
-	Plug 'sheerun/vim-polyglot'
+	"Plug 'sheerun/vim-polyglot'
 	" Linter
-	Plug 'dense-analysis/ale'
+	"Plug 'dense-analysis/ale'
 	"Coc
 	Plug 'neoclide/coc.nvim', {'branch': 'release'}
 	Plug 'neoclide/coc-tsserver', {'do': 'npm i package.json && npm i'}
@@ -46,8 +48,18 @@ call plug#begin()
 	Plug 'toppair/peek.nvim', { 'do': 'deno task --quiet build:fast' }
 	" Show indent lines with colored
 	Plug 'lukas-reineke/indent-blankline.nvim'
+	" Parser
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+	" Folding
+	"Plug 'eddiebergman/nvim-treesitter-pyfold'
 call plug#end()
 
+
+" NeoTerm "cannot change, modifiable is off"
+" let g:neoterm_autoinsert = 1
+" let g:neoterm_autoscroll = 1
+" autocmd TermOpen * setlocal modifiable
+" augroup neoterm_modifiable
 
 
 " peek.nvim のコマンド定義 "
@@ -75,17 +87,21 @@ nmap cxx <Plug>(ExchangeLine)
 	let g:strip_whitespace_on_save=1
 	let g:strip_whitespace_on_save = 1
 " ALE
+	let g:ale_linters = {
+	\   'python': [],
+	\}
 	let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 	let g:ale_fixers = {
-		\   '*': ['remove_trailing_lines', 'trim_whitespace'],
-  		\   'python': ['black', 'reorder-python-imports-black'],
-  		\ }
+		\'*': ['remove_trailing_lines', 'trim_whitespace'],
+		\'python': ['black', 'reorder-python-imports-black'],
+	\}
 " NeoTerm
-	let g:neoterm_default_mod='belowright'
-	let g:neoterm_autoscroll=1
+"	let g:neoterm_default_mod='belowright'
+"	let g:neoterm_autoscroll=1
 
 " Setup
 	set syntax
+	set nowrap
 	set nobackup
 	set noswapfile
 	set number
@@ -103,14 +119,19 @@ nmap cxx <Plug>(ExchangeLine)
 	set showmatch
 	set cmdheight=2
 	set display=lastline
-	set foldenable
-	set foldmethod=indent
-	set foldlevel=1
 	set updatetime=100
+" Fold Setup
+"set foldmethod=expr
+"set foldexpr=nvim_treesitter#foldexpr()
+"	set foldenable
+"	set foldlevelstart=99
+set foldenable
+set foldmethod=indent
+set foldlevel=1
 
 " KeyMap
-	nmap <F10> :NERDTreeToggle<CR>
-	nmap <F9> :TagbarToggle<CR>
+	nmap <F9> :NERDTreeToggle<CR>
+	nmap <F10> :TagbarToggle<CR>
 	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 	nmap <silent> <C-j> <Plug>(ale_next_wrap)
 " NeoTerm
@@ -162,10 +183,16 @@ nnoremap <F4> "=strftime(" ^%Y/%m/%d")<CR>P
 " finished at
 nnoremap <F3> "=strftime(" *%Y/%m/%d")<CR>P
 " remove at
-nnoremap <F2> "=strftime(" &%Y/%m/%d")<CR>P
+nnoremap <F2> "=strftime(" &%Y/%m/%d")<CR>
 
-" peek.nvim
+" Flake8 View
+nmap <F11> :CocDiagnostics<CR>P
+
+
 lua << EOF
+-------------------
+---		Peek	---
+-------------------
 require('peek').setup({
   auto_load = true,        -- 別のマークダウンバッファに入るときに自動的にプレビューを読み込むかどうか
   close_on_bdelete = true, -- バッファを削除するときにプレビューウィンドウを閉じるかどうか
@@ -179,7 +206,9 @@ require('peek').setup({
   throttle_time = 'auto',  -- 新しいレンダリングを開始する前に経過する必要のある最小時間（ミリ秒）
 })
 
--- indent-blankline
+------------------------
+--- indent-blankline ---
+------------------------
 local highlight = {
     "RainbowBlue",
     "RainbowOrange",
@@ -204,6 +233,24 @@ hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
 end)
 
 require("ibl").setup { indent = { highlight = highlight } }
+
+
+-----------------------
+--- nvim-treesitter ---
+-----------------------
+--require('nvim-treesitter-pyfold').setup({ enable = true })
+require('nvim-treesitter.configs').setup({
+  ensure_installed = { "python" },
+  highlight = { enable = true },
+  indent = { enable = true },
+  --fold = {
+  --  enable = true,
+  --  foldexpr = 'nvim_treesitter#foldexpr()',
+  --  },
+})
 EOF
+
+" setlocal foldmethod=expr
+" setlocal foldexpr=nvim_treesitter#foldexpr()
 
 
