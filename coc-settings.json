@@ -17,6 +17,17 @@
 	"python.linting.pyrightEnabled": false,
 	"python.linting.mypyEnabled": false,
 
+	"clangd": {
+      "command": "clangd",
+      "rootPatterns": [".git", "compile_commands.json", "Makefile"],
+      "filetypes": ["c", "cpp", "objc", "objcpp", "mm"]
+    },
+
+	"clangd.arguments": [
+	  "--compile-commands-dir=.",
+	  "--background-index",
+	  "--clang-tidy"
+	],
 	"coc.preferences.formatOnSaveFileTypes": [
 		"cpp"
 	]

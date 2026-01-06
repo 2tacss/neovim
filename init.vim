@@ -54,20 +54,11 @@ call plug#begin()
 	"Plug 'eddiebergman/nvim-treesitter-pyfold'
 call plug#end()
 
-
-" NeoTerm "cannot change, modifiable is off"
-" let g:neoterm_autoinsert = 1
-" let g:neoterm_autoscroll = 1
-" autocmd TermOpen * setlocal modifiable
-" augroup neoterm_modifiable
-
-
-" peek.nvim のコマンド定義 "
+" peek.nvim "
 command! PeekOpen lua require('peek').open()
 command! PeekClose lua require('peek').close()
 
-
-
+" fugitive.vim
 runtime! autoload/fugitive.vim
 
 let g:exchange_no_mappings=1
@@ -143,7 +134,7 @@ set foldlevel=1
 " Open Fold
 	nmap <F6> zO
 " Next Fold
-	nmap <F2> zj
+	nmap <F12> zj
 " Back Fold
 	nmap <F3> zk
 	nmap <C-0> ysiw"
@@ -188,6 +179,13 @@ nnoremap <F2> "=strftime(" &%Y/%m/%d")<CR>
 " Flake8 View
 nmap <F11> :CocDiagnostics<CR>P
 
+augroup ObjCpp
+  autocmd!
+  autocmd FileType objcpp,mm setl omnifunc=coc#completion#complete
+  autocmd FileType objcpp,mm nnoremap <silent> gd :CocDefinition<CR>
+  autocmd FileType objcpp,mm nnoremap <silent> K :CocHover<CR>
+  autocmd FileType objcpp,mm nnoremap <silent> gr :CocReferences<CR>
+augroup END
 
 lua << EOF
 -------------------
