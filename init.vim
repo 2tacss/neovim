@@ -269,8 +269,58 @@ require('nvim-treesitter.configs').setup({
   --  },
 })
 EOF
+augroup BackupPlugin
+	autocmd!
+	autocmd BufReadPost * call s:CheckProtection()
+augroup END
 
-" setlocal foldmethod=expr
-" setlocal foldexpr=nvim_treesitter#foldexpr()
+function! s:CheckProtection()
+	let l:file = expand('%:p')
+	if l:file == '' || !filereadable(l:file) | return | endif
 
+	" 初期状態は「保護なし」としてマーク
+	let b:is_protected = 0
 
+	silent execute '!backup --check ' . shellescape(l:file)
+	if v:shell_error == 1
+		" 保護されている場合のみダイアログ表示
+		let l:choice = confirm("This file is PROTECTED. Unlock and edit?", "&Yes\n&No", 2)
+		if l:choice == 1
+			let b:is_protected = 1
+			silent execute '!backup -u ' . shellescape(l:file)
+			setlocal noreadonly
+			setlocal modifiable
+			
+			" 保存時と終了時のイベントを登録（保護ファイルのみ）
+			autocmd! BackupPlugin BufWritePost <buffer> call s:SaveAndBackup()
+			autocmd! BackupPlugin BufWinLeave,VimLeave <buffer> call s:FinalProtect()
+			
+			echo "File unlocked. Backup will be created on save."
+		else
+			setlocal readonly
+			echo "Opened in read-only mode."
+		endif
+	endif
+endfunction
+
+function! s:SaveAndBackup()
+	let l:file = expand('%:p')
+	" バックアップ作成
+	silent execute '!backup ' . shellescape(l:file)
+	
+	" 元々保護されていたファイルなら、編集を続けるために再度解除しておく
+	if get(b:, 'is_protected', 0)
+		silent execute '!backup -u ' . shellescape(l:file)
+		setlocal noreadonly
+		echo "Changes backed up. File remains unlocked for editing."
+	endif
+endfunction
+
+function! s:FinalProtect()
+	let l:file = expand('%:p')
+	" 元々保護されていた場合のみ、最後にロックをかける
+	if get(b:, 'is_protected', 0)
+		silent execute '!backup -s ' . shellescape(l:file)
+	endif
+	autocmd! BackupPlugin * <buffer>
+endfunction
