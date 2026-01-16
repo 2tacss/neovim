@@ -11,24 +11,37 @@
 	"python.linting.flake8Args": [
 		"--ignore=E501"
 	],
-
 	"python.linting.flake8Path": "/Users/vahamut/.pyenv/shims/flake8",
 	"python.linting.pylintEnabled": false,
 	"python.linting.pyrightEnabled": false,
 	"python.linting.mypyEnabled": false,
 
 	"clangd": {
-      "command": "clangd",
-      "rootPatterns": [".git", "compile_commands.json", "Makefile"],
-      "filetypes": ["c", "cpp", "objc", "objcpp", "mm"]
-    },
-
-	"clangd.arguments": [
-	  "--compile-commands-dir=.",
-	  "--background-index",
-	  "--clang-tidy"
-	],
-	"coc.preferences.formatOnSaveFileTypes": [
-		"cpp"
-	]
+		"command": "/usr/bin/clangd",
+		"rootPatterns": [
+			".git",
+			"compile_commands.json",
+			"Makefile"
+		],
+		"filetypes": [
+			"c",
+			"cpp",
+			"objc",
+			"objcpp",
+			"mm"
+		],
+		"clangd.arguments": [
+			"--background-index",
+			"--clang-tidy",
+			"--header-insertion=iwyu",
+			"--query-driver=/usr/bin/g++,/usr/bin/clang++,/opt/local/bin/*,/opt/local/**/lib/**/ld,/opt/homebrew/include",
+			"-extra-arg=-I/opt/homebrew/include",
+			"-extra-arg=-I/opt/homebrew/Cellar"
+		],
+		"clangd.fallbackFlags": [
+        "-I/opt/homebrew/include",
+        "-I/opt/homebrew/Cellar/sdl2/2.32.4/include",
+        "-std=c++17"
+		]
+	}
 }

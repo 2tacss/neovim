@@ -1,0 +1,34 @@
+{
+	"diagnostic.enable": true,
+	"python.linting.enabled": true,
+	"python.jediPath": "~/.pyenv/versions/neovim3/lib/python3.10.5/site-packages/",
+	"intelephense.licenceKey": "004BID8XBCD43OE",
+	"intelephense.enable": true,
+	"suggest.enablePreselect": false,
+	"diagnostic.virtualText": true,
+	"diagnostic.virtualTextCurrentLineOnly": false,
+	"python.linting.flake8Enabled": true,
+	"python.linting.flake8Args": [
+		"--ignore=E501"
+	],
+	"python.linting.flake8Path": "/Users/vahamut/.pyenv/shims/flake8",
+	"python.linting.pylintEnabled": false,
+	"python.linting.pyrightEnabled": false,
+	"python.linting.mypyEnabled": false,
+
+"clangd": {
+    "command": "/usr/bin/clangd",
+    "rootPatterns": [".git", "compile_commands.json", "Makefile"],
+    "filetypes": ["c", "cpp", "objc", "objcpp", "mm"],
+    "arguments": [
+      "--background-index",
+      "--clang-tidy",
+      "--header-insertion=iwyu",
+      "--query-driver=/usr/bin/g++,/usr/bin/clang++,/opt/local/bin/*",
+      "-extra-arg=-I/opt/local/include",
+      "-extra-arg=-I/opt/local/include/SDL2",
+      "-extra-arg=-I./src",
+      "-extra-arg=-std=c++17"
+    ]
+  }
+}

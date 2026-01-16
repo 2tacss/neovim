@@ -11,13 +11,13 @@ call plug#begin()
 	" Visualize identation line
 	Plug 'Yggdroot/indentLine'
 	" :NERDTreeToggle"
-	Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+	Plug 'scrooloose/nerdtree'
+	" SourceTree plugin: Diff per file with NerdTree
+	Plug 'xuyuanp/nerdtree-git-plugin'
 	" CTag - :TagbarToggle
 	Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 	" NeoTerm :Tnew
 	Plug 'kassio/neoterm'
-	" Tarinling
-	Plug 'ntpeters/vim-better-whitespace'
 	" Multi Languages Syntax Coloring
 	"Plug 'sheerun/vim-polyglot'
 	" Linter
@@ -35,8 +35,6 @@ call plug#begin()
 	Plug 'jiangmiao/auto-pairs'
 	" Git diff
 	Plug 'airblade/vim-gitgutter'
-	" SourceTree plugin: Diff per file with NerdTree
-	Plug 'xuyuanp/nerdtree-git-plugin', { 'on': 'NERDTreeToggle' }
 	" fugit
 	Plug 'tpope/vim-fugitive'
 	Plug 'tommcdo/vim-exchange'
@@ -120,8 +118,26 @@ set foldenable
 set foldmethod=indent
 set foldlevel=1
 
+
+let g:NERDTreeForcedFocus = 1
+let g:NERDTreeMaintainCursorPos = 1
+
 " KeyMap
-	nmap <F9> :NERDTreeToggle<CR>
+function! NERDTreeFocusAction()
+	" NERDTreeを切り替え
+	NERDTreeToggle
+
+	" もしツリーが開いた状態なら（ウィンドウ番号が取得できれば）
+	let l:nt_winnr = bufwinnr('tNERD_tree_')
+	if l:nt_winnr != -1
+		" timer_startの中で直接 wincmd w を実行します。
+		" 特殊記号を使わないため E15 エラーを物理的に回避できます。
+		call timer_start(100, {-> execute(l:nt_winnr . 'wincmd w')})
+	endif
+endfunction
+
+" F9の割り当て
+nnoremap <silent> <F9> :call NERDTreeFocusAction()<CR>
 	nmap <F10> :TagbarToggle<CR>
 	nmap <silent> <C-k> <Plug>(ale_previous_wrap)
 	nmap <silent> <C-j> <Plug>(ale_next_wrap)
@@ -129,18 +145,23 @@ set foldlevel=1
 	let g:neoterm_autoscroll=1
 " Run a Terminal
 	nmap <F8> :Tnew<CR>
+" Open Fol
+	nmap <F7> zO
 " Close Fold
-	nmap <F7> zc
-" Open Fold
-	nmap <F6> zO
+	nmap <F6> zc
 " Next Fold
 	nmap <F12> zj
 " Back Fold
-	nmap <F3> zk
+"	nmap <F3> zk
 	nmap <C-0> ysiw"
 
 " leave out terminal
-	tnoremap <silent> <C-w> <C-\><C-n><C-w>
+" ---------------------------------------------------------
+" 1. Ctrl-w 1回でペイン切り替え (通常・ターミナル両対応)
+" ---------------------------------------------------------
+nnoremap <C-w> <C-w>w
+tnoremap <silent> <C-w> <C-\><C-n><C-w>w
+
 " Run REPL
 " Ctrl+n when in NORMAL mode - Run single line
 " Ctrl+n when in VISUAL mode - Run multiple lines
@@ -188,6 +209,7 @@ augroup ObjCpp
 augroup END
 
 lua << EOF
+
 -------------------
 ---		Peek	---
 -------------------
